@@ -2,6 +2,7 @@
 
 class Evento
 {
+    private $db;
     private $id;
     private $titulo;
     private $descricao;
@@ -45,7 +46,7 @@ class Evento
 
     public function getLimiteInscricao()
     {
-        return $this->limite_inscricao;
+        return $this->limite_inscricoes;
     }
 
     public function getOrganizadorId()
@@ -80,7 +81,7 @@ class Evento
 
     public function setLimiteInscricao($limite_inscricoes)
     {
-        $this->limite_inscricao = $limite_inscricoes;
+        $this->limite_inscricoes = $limite_inscricoes;
     }
 
     public function setOrganizadorId($organizador_id)
@@ -96,9 +97,8 @@ class Evento
         $date = $data['data'];
         $local = $data['local'];
         $limite_inscricoes = $data['limite_inscricao'];
-        $organizador_id = $data['organizador_id'];
 
-        $sql = "INSERT INTO eventos (titulo, descricao, data, local, limite_inscricoes, organizador_id) VALUES ('$titulo', '$descricao', '$date', '$local', '$limite_inscricoes', '$organizador_id')";
+        $sql = "INSERT INTO eventos (titulo, descricao, data, local, limite_inscricoes) VALUES ('$titulo', '$descricao', '$date', '$local', '$limite_inscricoes')";
         $result = $conn->query($sql);
 
         if ($result === TRUE) {
@@ -106,6 +106,7 @@ class Evento
         } else {
             return false;
         }
+        
     }
 
     public function delete($id)
@@ -165,9 +166,8 @@ class Evento
                 descricao = '{$data['descricao']}', 
                 data = '{$data['data']}', 
                 local = '{$data['local']}', 
-                limite_inscricoes = '{$data['limite_inscricao']}', 
-                organizador_id = '{$data['organizador_id']}' 
-            WHERE id = {$data['id']}";
+                limite_inscricoes = '{$data['limite_inscricao']}'
+                WHERE id = {$data['id']}";
 
         $result = $conn->query($sql);
 

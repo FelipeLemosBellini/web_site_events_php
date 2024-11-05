@@ -99,9 +99,6 @@
     <label for="limite_inscricao">Limite de inscrição</label>
     <input type="text" name="limite_inscricao" id="limite_inscricao" value="<?= isset($evento) ? htmlspecialchars($evento['limite_inscricoes']) : '' ?>">
 
-    <label for="organizador_id">Organizador</label>
-    <input type="text" name="organizador_id" id="organizador_id" value="<?= isset($evento) ? htmlspecialchars($evento['organizador_id']) : '' ?>">
-
     <button type="submit">Salvar</button>
 </form>
 </body>

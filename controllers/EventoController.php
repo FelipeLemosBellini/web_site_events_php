@@ -57,13 +57,12 @@ class EventoController
             'data' => $_POST['data'],
             'local' => $_POST['local'],
             'limite_inscricao' => $_POST['limite_inscricao'],
-            'organizador_id' => $_POST['organizador_id'],
         ];
 
         $evento = new Evento();
         $evento->create($data);
 
-        header('Location: /projeto');
+        header('Location: /web_site_events_php');
         exit;
     }
 
@@ -74,7 +73,7 @@ class EventoController
 
         $evento->delete($id);
 
-        header('Location: /projeto');
+        header('Location: /web_site_events_php');
     }
 
     public function update()
@@ -124,13 +123,12 @@ class EventoController
             'data' => $_POST['data'],
             'local' => $_POST['local'],
             'limite_inscricao' => $_POST['limite_inscricao'],
-            'organizador_id' => $_POST['organizador_id'],
         ];
 
         $evento = new Evento();
         $evento->update($data);
 
-        header('Location: /projeto');
+        header('Location: /web_site_events_php');
         exit;
     }
 }

@@ -40,10 +40,20 @@
         }
 
         .search-bar {
-            width: 200px;
-            padding: 8px;
+            width: 500px;
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+
+        .logout{
+            padding: 10px 20px;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         .add-event {
@@ -151,7 +161,10 @@
     <div class="header-content">
         <h1>Eventos de Tecnologia <span class="br">BR</span></h1>
         <input type="text" placeholder="Pesquisar eventos" class="search-bar">
-        <button class="add-event" onclick="window.location.href='?acao=create'">Adicionar um evento</button>
+        <div class="buttons">
+            <button class="add-event" onclick="window.location.href='?acao=create'">Adicionar um evento</button>
+            <button class="logout" onclick="window.location.href='views/logout.php'">Logout</button>
+        </div>
     </div>
 </header>
 
