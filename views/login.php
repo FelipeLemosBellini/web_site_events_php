@@ -52,16 +52,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
-        button {
+        button, a {
+            display: inline-block;
             width: 100%;
             padding: 10px;
-            border: none;
             background-color: #6a0dad;
             color: white;
             font-weight: bold;
+            text-align: center;
+            text-decoration: none;
             cursor: pointer;
             border-radius: 5px;
+            margin-bottom: 10px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        a {
+            font-size: small;
+            background-color: #777777;
+            line-height: normal;
         }
 
         button:hover {
@@ -86,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="password" name="senha" placeholder="Senha" required>
             </div>
             <button type="submit">Entrar</button>
+            <a type="button" href="registro.php">Registrar</a>
             <?php if (!empty($erro)): ?>
                 <div class="error">
                     <?php echo htmlspecialchars($erro); ?>
