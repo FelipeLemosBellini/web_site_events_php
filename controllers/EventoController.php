@@ -4,6 +4,7 @@ class EventoController
 {
     public function __construct()
     {
+        session_start();
         require_once 'models/Evento.php';
     }
 
@@ -11,6 +12,7 @@ class EventoController
     {
         $evento = new Evento();
         $eventos = $evento->getEventos();
+        $isParticipante = $_SESSION['user_tipo'] == 'participante';
 
         require_once 'views/home.php';
     }

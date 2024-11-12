@@ -4,6 +4,7 @@ class UsuarioController
 {
     public function __construct()
     {
+        session_start();
         require_once '../models/Usuario.php';
     }
 
@@ -17,7 +18,48 @@ class UsuarioController
 
     public function create()
     {
-        require_once 'views/usuario_form.php';
+        $erros = [];
+
+        if (empty($_POST['nome'])) {
+            $erros[] = 'Nome é obrigatório';
+        }
+
+        if (empty($_POST['email'])) {
+            $erros[] = 'Email é obrigatório';
+        }
+
+        if (empty($_POST['senha'])) {
+            $erros[] = 'Senha é obrigatória';
+        }
+
+        if(isset($_POST['confirmacao_senha']) && $_POST['senha'] != $_POST['confirmacao_senha']){
+            $erros[] = 'As senhas não conferem';
+        }
+
+        if (!empty($erros)) {
+            foreach ($erros as $erro) {
+                echo $erro . '<br>';
+            }
+            return false;
+        }
+
+        $data = [
+            'nome' => $_POST['nome'],
+            'email' => $_POST['email'],
+            'senha' => $_POST['senha'],
+            'tipo' => $_POST['tipo'] ?: 'participante',
+        ];
+
+        $usuario = new Usuario();
+        $usuario->create($data);
+
+
+        $_SESSION['user_id'] = $usuario->getId();
+        $_SESSION['user_nome'] = $usuario->getNome();
+        $_SESSION['user_tipo'] = $usuario->getTipo();
+
+        header('Location: /web_site_events_php');
+        exit;
     }
 
     public function store()
@@ -40,6 +82,10 @@ class UsuarioController
             $erros[] = 'Tipo de usuário é obrigatório';
         }
 
+        if(isset($_POST['confirmacao_senha']) && $_POST['senha'] != $_POST['confirmacao_senha']){
+            $erros[] = 'As senhas não conferem';
+        }
+
         if (!empty($erros)) {
             foreach ($erros as $erro) {
                 echo $erro . '<br>';
@@ -51,11 +97,15 @@ class UsuarioController
             'nome' => $_POST['nome'],
             'email' => $_POST['email'],
             'senha' => $_POST['senha'],
-            'tipo' => $_POST['tipo'],
+            'tipo' => $_POST['tipo'] ?: 'participante',
         ];
 
         $usuario = new Usuario();
         $usuario->create($data);
+
+        $_SESSION['user_id'] = $usuario->getId();
+        $_SESSION['user_nome'] = $usuario->getNome();
+        $_SESSION['user_tipo'] = $usuario->getTipo();
 
         header('Location: /web_site_events_php');
         exit;
@@ -146,20 +196,26 @@ class UsuarioController
 
         $usuario = new Usuario();
         if ($usuario->authenticate($email, $senha)) {
-            session_start();
             $_SESSION['user_id'] = $usuario->getId();
             $_SESSION['user_nome'] = $usuario->getNome();
             $_SESSION['user_tipo'] = $usuario->getTipo();
 
             header('Location: /web_site_events_php');
+            exit;
         } else {
             $erros[] = 'Credenciais Invalidas';
+            foreach ($erros as $erro) {
+                echo $erro . '<br>';
+            }
         }
     }
 
+
     public function logout()
     {
-        session_start();
+        setcookie('id_user', '', time() - 3600, "/");
+        setcookie('nome_user', '', time() - 3600, "/");
+        setcookie('tipo_user', '', time() - 3600, "/");
         session_unset();
         session_destroy();
         header('Location: /web_site_events_php/login.php');
