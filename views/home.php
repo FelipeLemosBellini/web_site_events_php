@@ -162,7 +162,9 @@
         <h1>Eventos de Tecnologia <span class="br">BR</span></h1>
         <input type="text" placeholder="Pesquisar eventos" class="search-bar">
         <div class="buttons">
+            <?php if(!$isParticipante) { ?>
             <button class="add-event" onclick="window.location.href='?acao=create'">Adicionar um evento</button>
+            <?php } ?>
             <button class="logout" onclick="window.location.href='views/logout.php'">Logout</button>
         </div>
     </div>
@@ -191,8 +193,12 @@
                     <td><?= htmlspecialchars($evento['data']) ?></td>
                     <td><?= htmlspecialchars($evento['local']) ?></td>
                     <td>
+                        <?php if(!$isParticipante) { ?>
                         <a href="?acao=update&id=<?= $evento['id'] ?>" class="action-btn edit">Editar</a>
                         <a href="?acao=delete&id=<?= $evento['id'] ?>" class="action-btn delete">Excluir</a>
+                        <?php } else {?>
+                        <a href="?acao=participar&id=<?= $evento['id'] ?>" class="action-btn edit">Participar</a>
+                        <?php } ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
