@@ -133,4 +133,13 @@ class EventoController
         header('Location: /web_site_events_php');
         exit;
     }
+
+    public function participar()
+    {
+        $idEvento = $_POST['id_evento'];
+        $evento = new Evento();
+        $evento->participar($idEvento);
+
+        header('Location: /web_site_events_php');
+    }
 }

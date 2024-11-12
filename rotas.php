@@ -49,6 +49,9 @@ if (isset($_GET['acao'])) {
         case 'logout':
             $controller->logout();
             break;
+        case 'participar':
+            $controller->participar();
+            break;
         
         default:
             $controller->index();

@@ -180,4 +180,20 @@ class Evento
         $conn->close();
     }
 
+    public function participar($idEvento)
+    {
+        $conn = $this->db;
+
+        $sql = "INSERT INTO evento_usuario (usuario_id, evento_id) VALUES ({$_SESSION['id']}, {$idEvento})";
+        $result = $conn->query($sql);
+
+        if ($result === TRUE) {
+            return true;
+        } else {
+            return false;
+        }
+
+        $conn->close();
+    }
+
 }
