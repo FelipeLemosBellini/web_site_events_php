@@ -52,6 +52,9 @@ if (isset($_GET['acao'])) {
         case 'participar':
             $controller->participar();
             break;
+        case 'cancelar_participacao':
+            $controller->cancelarParticipacao();
+            break;
         
         default:
             $controller->index();

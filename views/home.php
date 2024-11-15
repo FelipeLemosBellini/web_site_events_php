@@ -160,10 +160,10 @@
 <header>
     <div class="header-content">
         <h1>Eventos de Tecnologia <span class="br">BR</span></h1>
-        <input type="text" placeholder="Pesquisar eventos" class="search-bar">
+        <input type="text" id="search-bar" placeholder="Pesquisar eventos" class="search-bar">
         <div class="buttons">
             <?php if(!$isParticipante) { ?>
-            <button class="add-event" onclick="window.location.href='?acao=create'">Adicionar um evento</button>
+                <button class="add-event" onclick="window.location.href='?acao=create'">Adicionar um evento</button>
             <?php } ?>
             <button class="logout" onclick="window.location.href='views/logout.php'">Logout</button>
         </div>
@@ -185,7 +185,7 @@
                 <th>Ações</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="event-tbody">
             <?php foreach ($eventos as $evento): ?>
                 <tr>
                     <td><?= htmlspecialchars($evento['titulo']) ?></td>
@@ -196,8 +196,10 @@
                         <?php if(!$isParticipante) { ?>
                         <a href="?acao=update&id=<?= $evento['id'] ?>" class="action-btn edit">Editar</a>
                         <a href="?acao=delete&id=<?= $evento['id'] ?>" class="action-btn delete">Excluir</a>
+                        <?php } else if(!$evento['inscrito']){?>
+                        <a href="?acao=participar&id_evento=<?= $evento['id'] ?>" class="action-btn edit">Participar</a>
                         <?php } else {?>
-                        <a href="?acao=participar&id=<?= $evento['id'] ?>" class="action-btn edit">Participar</a>
+                        <a href="?acao=cancelar_participacao&id=<?= $evento['inscricao_id'] ?>" class="action-btn delete">Cancelar</a>
                         <?php } ?>
                     </td>
                 </tr>
@@ -210,5 +212,24 @@
 <footer>
     <p>&copy; 2024 <span class="footer-logo">Rafael, Felipe, Arthur, Vinicius</span></p>
 </footer>
+
+<script>
+    document.getElementById('search-bar').addEventListener('input', function() {
+        const searchQuery = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#event-tbody tr');
+
+        rows.forEach(row => {
+            const title = row.cells[0].textContent.toLowerCase();
+            const description = row.cells[1].textContent.toLowerCase();
+            const local = row.cells[3].textContent.toLowerCase();
+
+            if (title.includes(searchQuery) || description.includes(searchQuery) || local.includes(searchQuery)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 </body>
 </html>

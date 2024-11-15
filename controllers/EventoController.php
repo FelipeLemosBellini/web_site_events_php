@@ -6,13 +6,16 @@ class EventoController
     {
         session_start();
         require_once 'models/Evento.php';
+        require_once 'models/Inscricoes.php';
     }
 
     public function index()
     {
         $evento = new Evento();
-        $eventos = $evento->getEventos();
+        $eventos = $evento->getEventos($_SESSION['user_id']);
         $isParticipante = $_SESSION['user_tipo'] == 'participante';
+
+
 
         require_once 'views/home.php';
     }
@@ -136,9 +139,34 @@ class EventoController
 
     public function participar()
     {
-        $idEvento = $_POST['id_evento'];
-        $evento = new Evento();
-        $evento->participar($idEvento);
+        $idEvento = $_GET['id_evento'];
+        $eventoInstance = new Evento();
+        $evento = $eventoInstance->getEvento($idEvento);
+
+        $inscricaoInstance = new Inscricoes();
+        $totalInscricoes = $inscricaoInstance->getTotalInscricoes($idEvento);
+
+        if($evento['limite_inscricoes'] <= $totalInscricoes) {
+            echo 'Limite de inscrições atingido';
+            return false;
+        }
+
+        $data = [
+          'idEvento' => $idEvento,
+            'idParticipante' => $_SESSION['user_id']
+        ];
+
+        $inscricaoInstance->create($data);
+
+        header('Location: /web_site_events_php');
+    }
+
+    public function cancelarParticipacao()
+    {
+        $id = $_GET['id'];
+        $inscricao = new Inscricoes();
+
+        $inscricao->delete($id);
 
         header('Location: /web_site_events_php');
     }

@@ -123,23 +123,40 @@ class Evento
         }
     }
 
-    public function getEventos()
+    public function getEventos($userId)
     {
         $conn = $this->db;
 
-        $sql = "SELECT * FROM eventos";
-        $result = $conn->query($sql);
+        $sql = "
+        select 
+            e.*, 
+            i.id as inscricao_id,
+            case 
+                when i.participante_id is not null then 1 
+                else 0 
+            end as inscrito
+        from eventos e
+        left join inscricoes i 
+            on e.id = i.evento_id and i.participante_id = ?
+    ";
+
+        // Preparar a consulta para evitar SQL Injection
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $tarefas = [];
+            $eventos = [];
             while ($row = $result->fetch_assoc()) {
-                $tarefas[] = $row;
+                $eventos[] = $row;
             }
-            return $tarefas;
+            return $eventos;
         } else {
             return [];
         }
     }
+
 
     public function getEvento($id)
     {
