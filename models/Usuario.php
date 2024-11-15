@@ -12,7 +12,12 @@ class Usuario
     public function __construct()
     {
         global $conn;
-        require_once '../db.php';
+
+        if (file_exists('db.php')) {
+            require_once 'db.php';
+        } elseif (file_exists('../db.php')) {
+            require_once '../db.php';
+        }
 
         $this->db = $conn;
     }
@@ -134,7 +139,7 @@ class Usuario
         $sql = "UPDATE usuarios SET 
                 nome = '{$data['nome']}', 
                 email = '{$data['email']}', 
-                senha = '" . password_hash($data['senha'], PASSWORD_DEFAULT) . "', 
+                senha = '{$data['senha']}', 
                 tipo = '{$data['tipo']}'
                 WHERE id = {$data['id']}";
 

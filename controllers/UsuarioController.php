@@ -5,7 +5,12 @@ class UsuarioController
     public function __construct()
     {
         session_start();
-        require_once '../models/Usuario.php';
+
+        if (file_exists('models/Usuario.php')) {
+            require_once 'models/Usuario.php';
+        } elseif (file_exists('../models/Usuario.php')) {
+            require_once '../models/Usuario.php';
+        }
     }
 
     public function index()
@@ -146,10 +151,6 @@ class UsuarioController
             $erros[] = 'Senha é obrigatória';
         }
 
-        if (empty($_POST['tipo'])) {
-            $erros[] = 'Tipo de usuário é obrigatório';
-        }
-
         if (!empty($erros)) {
             foreach ($erros as $erro) {
                 echo $erro . '<br>';
@@ -162,7 +163,7 @@ class UsuarioController
             'nome' => $_POST['nome'],
             'email' => $_POST['email'],
             'senha' => $_POST['senha'],
-            'tipo' => $_POST['tipo'],
+            'tipo' => $_POST['tipo'] ? 'organizador' : 'participante',
         ];
 
         $usuario = new Usuario();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listagem de Eventos</title>
+    <title>Home</title>
     <style>
         * {
             margin: 0;
@@ -66,6 +66,16 @@
             font-weight: bold;
         }
 
+        .toggle-button {
+            padding: 10px 20px;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         .add-event:hover {
             background-color: #5a009d;
         }
@@ -77,44 +87,51 @@
             justify-content: center;
         }
 
-        .event-list {
+        .list-section {
             text-align: center;
             max-width: 800px;
             padding: 40px 20px;
         }
 
-        .event-list h2 {
+        .list-section h2 {
             font-size: 28px;
             margin-bottom: 10px;
         }
 
-        .event-list p {
-            color: #555;
-            margin-bottom: 20px;
-        }
-
-        .event-table {
+        .list-section table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
 
-        .event-table th,
-        .event-table td {
+        .list-section th,
+        .list-section td {
             padding: 12px;
             border: 1px solid #ddd;
             text-align: center;
             font-size: 16px;
         }
 
-        .event-table th {
+        .list-section th {
             background-color: #f8f8f8;
             font-weight: bold;
             color: #333;
         }
 
-        .event-table tr:nth-child(even) {
+        .list-section tr:nth-child(even) {
             background-color: #f9f9f9;
+        }
+
+        footer {
+            padding: 20px;
+            border-top: 1px solid #eaeaea;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .footer-logo {
+            font-weight: bold;
+            color: #6a0dad;
         }
 
         .action-btn {
@@ -143,26 +160,17 @@
             background-color: #d32f2f;
         }
 
-        footer {
-            padding: 20px;
-            border-top: 1px solid #eaeaea;
-            font-size: 14px;
-            color: #555;
-        }
 
-        .footer-logo {
-            font-weight: bold;
-            color: #6a0dad;
-        }
     </style>
 </head>
 <body>
 <header>
     <div class="header-content">
         <h1>Eventos de Tecnologia <span class="br">BR</span></h1>
-        <input type="text" id="search-bar" placeholder="Pesquisar eventos" class="search-bar">
+        <input type="text" id="search-bar" placeholder="Pesquisar eventos/usuários" class="search-bar">
         <div class="buttons">
             <?php if(!$isParticipante) { ?>
+                <button class="toggle-button" id="toggle-lists">Ver Lista de Usuários</button>
                 <button class="add-event" onclick="window.location.href='?acao=create'">Adicionar um evento</button>
             <?php } ?>
             <button class="logout" onclick="window.location.href='views/logout.php'">Logout</button>
@@ -171,11 +179,9 @@
 </header>
 
 <main>
-    <section class="event-list">
+    <section class="list-section" id="event-list" style="display: block;">
         <h2>Lista de Eventos</h2>
-        <p>Aqui você irá encontrar a lista de próximos eventos de tecnologia que irão rolar no Brasil compartilhados pela comunidade!</p>
-
-        <table class="event-table">
+        <table>
             <thead>
             <tr>
                 <th>Título</th>
@@ -194,13 +200,39 @@
                     <td><?= htmlspecialchars($evento['local']) ?></td>
                     <td>
                         <?php if(!$isParticipante) { ?>
-                        <a href="?acao=update&id=<?= $evento['id'] ?>" class="action-btn edit">Editar</a>
-                        <a href="?acao=delete&id=<?= $evento['id'] ?>" class="action-btn delete">Excluir</a>
+                            <a href="?acao=update&id=<?= $evento['id'] ?>" class="action-btn edit">Editar</a>
+                            <a href="?acao=delete&id=<?= $evento['id'] ?>" class="action-btn delete">Excluir</a>
                         <?php } else if(!$evento['inscrito']){?>
-                        <a href="?acao=participar&id_evento=<?= $evento['id'] ?>" class="action-btn edit">Participar</a>
+                            <a href="?acao=participar&id_evento=<?= $evento['id'] ?>" class="action-btn edit">Participar</a>
                         <?php } else {?>
-                        <a href="?acao=cancelar_participacao&id=<?= $evento['inscricao_id'] ?>" class="action-btn delete">Cancelar</a>
+                            <a href="?acao=cancelar_participacao&id=<?= $evento['inscricao_id'] ?>" class="action-btn delete">Cancelar</a>
                         <?php } ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="list-section" id="user-list" style="display: none;">
+        <h2>Lista de Usuários</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Função</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($usuarios as $usuario): ?>
+                <tr>
+                    <td><?= htmlspecialchars($usuario['nome']) ?></td>
+                    <td><?= htmlspecialchars($usuario['email']) ?></td>
+                    <td><?= ucfirst(htmlspecialchars($usuario['tipo'])) ?></td>
+                    <td>
+                        <a href="?controller=usuario&acao=update&id=<?= $usuario['id'] ?>" class="action-btn edit">Editar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -214,16 +246,31 @@
 </footer>
 
 <script>
-    document.getElementById('search-bar').addEventListener('input', function() {
+    const toggleButton = document.getElementById('toggle-lists');
+    const eventList = document.getElementById('event-list');
+    const userList = document.getElementById('user-list');
+    const searchBar = document.getElementById('search-bar');
+
+    toggleButton.addEventListener('click', () => {
+        if (eventList.style.display === 'block') {
+            eventList.style.display = 'none';
+            userList.style.display = 'block';
+            toggleButton.textContent = 'Ver Lista de Eventos';
+        } else {
+            userList.style.display = 'none';
+            eventList.style.display = 'block';
+            toggleButton.textContent = 'Ver Lista de Usuários';
+        }
+    });
+
+    searchBar.addEventListener('input', function() {
         const searchQuery = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#event-tbody tr');
+        const activeTable = eventList.style.display === 'block' ? 'event-tbody' : 'user-list tbody';
 
+        const rows = document.querySelectorAll(`#${activeTable} tr`);
         rows.forEach(row => {
-            const title = row.cells[0].textContent.toLowerCase();
-            const description = row.cells[1].textContent.toLowerCase();
-            const local = row.cells[3].textContent.toLowerCase();
-
-            if (title.includes(searchQuery) || description.includes(searchQuery) || local.includes(searchQuery)) {
+            const cells = Array.from(row.cells).map(cell => cell.textContent.toLowerCase());
+            if (cells.some(text => text.includes(searchQuery))) {
                 row.style.display = '';
             } else {
                 row.style.display = 'none';

@@ -5,7 +5,6 @@ require_once 'controllers/UsuarioController.php';
 
 $controller = null;
 
-// Define o controlador com base no parâmetro 'controller'
 if (isset($_GET['controller'])) {
     switch ($_GET['controller']) {
         case 'usuario':
@@ -20,10 +19,8 @@ if (isset($_GET['controller'])) {
     $controller = new EventoController();
 }
 
-// Define a ação com base no parâmetro 'acao'
 if (isset($_GET['acao'])) {
     switch ($_GET['acao']) {
-        // Rotas para o EventoController
         case 'create':
             $controller->create();
             break;

@@ -7,6 +7,7 @@ class EventoController
         session_start();
         require_once 'models/Evento.php';
         require_once 'models/Inscricoes.php';
+        require_once 'models/Usuario.php';
     }
 
     public function index()
@@ -14,8 +15,8 @@ class EventoController
         $evento = new Evento();
         $eventos = $evento->getEventos($_SESSION['user_id']);
         $isParticipante = $_SESSION['user_tipo'] == 'participante';
-
-
+        $usuario = new Usuario();
+        $usuarios = $usuario->getUsuarios();
 
         require_once 'views/home.php';
     }
